@@ -170,6 +170,24 @@ variable "network_ip" {
   default     = ""
 }
 
+variable "nic_type" {
+  description = "GVNIC or VIRTIO_NET, applied to all interfaces"
+  default     = "VIRTIO_NET"
+  validation {
+    condition     = var.nic_type == "GVNIC" || var.nic_type == "VIRTIO_NET"
+    error_message = "Must be GVNIC or VIRTIO_NET."
+  }
+}
+
+variable "total_egress_bandwidth_tier" {
+  description = "DEFAULT or TIER_1 egress bandwith tier"
+  default     = "DEFAULT"
+  validation {
+    condition     = var.total_egress_bandwidth_tier == "DEFAULT" || var.total_egress_bandwidth_tier == "TIER_1"
+    error_message = "Must be DEFAULT or TIER_1."
+  }
+}
+
 variable "additional_networks" {
   description = "Additional network interface details for GCE, if any."
   default     = []

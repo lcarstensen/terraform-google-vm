@@ -60,6 +60,7 @@ locals {
 # Instance Template
 ####################
 resource "google_compute_instance_template" "tpl" {
+  provider                = google-beta
   name_prefix             = "${var.name_prefix}-"
   project                 = var.project_id
   machine_type            = var.machine_type
@@ -108,6 +109,7 @@ resource "google_compute_instance_template" "tpl" {
     subnetwork         = var.subnetwork
     subnetwork_project = var.subnetwork_project
     network_ip         = length(var.network_ip) > 0 ? var.network_ip : null
+    nic_type           = var.nic_type
     dynamic "access_config" {
       for_each = var.access_config
       content {
@@ -131,6 +133,7 @@ resource "google_compute_instance_template" "tpl" {
       subnetwork         = network_interface.value.subnetwork
       subnetwork_project = network_interface.value.subnetwork_project
       network_ip         = length(network_interface.value.network_ip) > 0 ? network_interface.value.network_ip : null
+      nic_type           = var.nic_type
       dynamic "access_config" {
         for_each = network_interface.value.access_config
         content {
@@ -139,6 +142,10 @@ resource "google_compute_instance_template" "tpl" {
         }
       }
     }
+  }
+
+  network_performance_config {
+    total_egress_bandwidth_tier = var.total_egress_bandwidth_tier
   }
 
   lifecycle {
